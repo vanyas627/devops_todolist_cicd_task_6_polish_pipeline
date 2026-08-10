@@ -82,11 +82,15 @@ jobs:
       - name: Debug Kubernetes Cluster on Failure
         if: failure()
         run: |
-          echo "=== PODS STATUS ==="
-          kubectl get pods -A
-          
-          echo "=== TODOAPP LOGS ==="
-          kubectl logs -n todoapp -l app.kubernetes.io/name=todoapp --tail=200 --all-containers || true
-          
-          echo "=== DESCRIBE TODOAPP PODS ==="
-          kubectl describe pods -n todoapp -l app.kubernetes.io/name=todoapp
+            echo "=== PODS STATUS ==="
+            kubectl get pods -A
+            
+            echo "=== TODOAPP LOGS ==="
+            kubectl logs -n todoapp -l app=todoapp --all-containers=true --tail=200 || true
+            kubectl logs -n todoapp --all-containers=true --tail=200 || true
+            
+            echo "=== PREVIOUS LOGS (CRASH CAUSE) ==="
+            kubectl logs -n todoapp -l app=todoapp --previous --tail=100 || true
+            
+            echo "=== DESCRIBE TODOAPP PODS ==="
+            kubectl describe pods -n todoapp
