@@ -66,7 +66,7 @@ jobs:
 
       - name: Deploy helm to Development
         run: |
-          helm upgrade --install --wait --timeout 10m --debug ${{ inputs.helm-release-name }} ./todoapp-*.tgz \
+          helm upgrade --install --wait --timeout 5m --debug ${{ inputs.helm-release-name }} ./todoapp-*.tgz \
           -f ${{ inputs.helm-values-path }} \
           --set mysql.secrets.MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" \
           --set mysql.secrets.MYSQL_USER="${{ secrets.MYSQL_USER }}" \
@@ -76,6 +76,7 @@ jobs:
           --set todoapp.secrets.DB_USER="${{ secrets.MYSQL_USER }}" \
           --set todoapp.secrets.DB_PASSWORD="${{ secrets.MYSQL_PASSWORD }}" \
           --set todoapp.secrets.DB_HOST="${{ secrets.APP_DB_HOST }}" \
+          --set todoapp.image.repository="${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DockerImageName }}" \
           --set todoapp.image.tag=${{ github.sha }}
 
       - name: Debug Kubernetes Cluster on Failure
