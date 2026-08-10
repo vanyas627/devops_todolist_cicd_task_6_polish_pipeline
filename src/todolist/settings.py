@@ -61,8 +61,8 @@ WSGI_APPLICATION = "todolist.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-ENGINE = os.environ.get("ENGINE", "django.db.backends.sqlite3")
-DB_NAME = os.environ.get("DB_NAME", os.path.join(BASE_DIR, "db.sqlite3"))
+ENGINE = os.environ.get("ENGINE", "django.db.backends.mysql")
+DB_NAME = os.environ.get("DB_NAME", "todoapp")
 DB_USER = os.environ.get("DB_USER", "")
 DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
 DB_HOST = os.environ.get("DB_HOST", "")
