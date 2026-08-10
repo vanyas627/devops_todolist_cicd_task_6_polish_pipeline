@@ -61,23 +61,28 @@ WSGI_APPLICATION = "todolist.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-ENGINE = os.environ.get("ENGINE", "django.db.backends.sqlite3")
-DB_NAME = os.environ.get("DB_NAME", os.path.join(BASE_DIR, "db.sqlite3"))
-DB_USER = os.environ.get("DB_USER", "")
-DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
-DB_HOST = os.environ.get("DB_HOST", "")
+DB_HOST = os.environ.get("DB_HOST")
 
-DATABASES = {
-    'default': {
-        'ENGINE': ENGINE,
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASSWORD,
-        'HOST': DB_HOST,  # You can use a different host if your MySQL server is on a remote machine.
-        'PORT': '',  # Leave this empty to use the default MySQL port (3306).
+if DB_HOST:
+    # Если есть DB_HOST — это точно Kubernetes, используем MySQL
+    DATABASES = {
+        'default': {
+            'ENGINE': os.environ.get("ENGINE", "django.db.backends.mysql"),
+            'NAME': os.environ.get("DB_NAME", "todoapp"),
+            'USER': os.environ.get("DB_USER", ""),
+            'PASSWORD': os.environ.get("DB_PASSWORD", ""),
+            'HOST': DB_HOST,
+            'PORT': os.environ.get("DB_PORT", "3306"),
+        }
     }
-}
-
+else:
+    # Если DB_HOST нет — это локальные тесты в CI, используем SQLite
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
